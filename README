@@ -1,0 +1,276 @@
+# 💰 Finance Dashboard Backend API
+
+A scalable backend system for managing financial records with **role-based access control**, **secure authentication**, and **dashboard analytics**.
+
+---
+
+## 🚀 Project Overview
+
+This project is built as a backend for a finance dashboard where users can:
+
+* Track income and expenses
+* View financial summaries and trends
+* Access features based on their role
+
+The system is designed with a clean architecture and focuses on **data correctness, access control, and maintainability**.
+
+---
+
+## 🧠 Core Features
+
+### 🔐 Authentication & Security
+
+* JWT-based authentication
+* Password hashing using bcrypt
+* Protected routes using middleware
+* Account activation/deactivation support
+
+---
+
+### 👥 Role-Based Access Control (RBAC)
+
+| Role    | Permissions                              |
+| ------- | ---------------------------------------- |
+| Viewer  | View dashboard data                      |
+| Analyst | View records + analytics                 |
+| Admin   | Full access (records + users management) |
+
+✔ Implemented using middleware (`protect`, `restrictTo`)
+
+---
+
+### 🧾 Financial Records Management
+
+Each record includes:
+
+* Amount
+* Type (`income` / `expense`)
+* Category
+* Date
+* Notes
+* CreatedBy (user reference)
+
+#### Features:
+
+* Create records (Admin only)
+* Read records (role-based)
+* Update records
+* Soft delete (`isDeleted`)
+* Filtering:
+
+  * type
+  * category
+  * date range
+* Pagination support
+
+---
+
+### 📊 Dashboard & Analytics
+
+Efficient aggregation queries implemented using MongoDB:
+
+* Total income
+* Total expenses
+* Net balance
+* Category-wise breakdown
+* Monthly trends
+* Weekly trends
+* Recent activity
+
+✔ Dashboard is **user-specific** (non-admin users only see their own data)
+
+---
+
+### 🛡️ Validation & Error Handling
+
+* Input validation using `express-validator`
+* Custom error class (`AppError`)
+* Centralized error handling middleware
+* Consistent API response format
+
+---
+
+## 🏗️ Tech Stack
+
+* **Node.js**
+* **Express.js (v4)** ⚠️ (used for stability)
+* **MongoDB + Mongoose**
+* **JWT** (Authentication)
+* **bcryptjs** (Password hashing)
+
+---
+
+## 📁 Project Structure
+
+```id="l4t9tm"
+src/
+├── config/        # DB connection
+├── controllers/   # Request handlers
+├── services/      # Business logic (dashboard)
+├── models/        # Mongoose schemas
+├── routes/        # API routes
+├── middleware/    # Auth & RBAC
+├── utils/         # Error handling
+```
+
+---
+
+## 🔑 Authentication Flow
+
+1. User registers or logs in
+2. Server returns JWT token
+3. Client sends token in header:
+
+```id="r8q53u"
+Authorization: Bearer <token>
+```
+
+4. Middleware verifies token and attaches user to request
+
+---
+
+## 📡 API Endpoints
+
+### 🔐 Auth
+
+| Method | Endpoint           | Description      |
+| ------ | ------------------ | ---------------- |
+| POST   | /api/auth/register | Register user    |
+| POST   | /api/auth/login    | Login user       |
+| GET    | /api/auth/me       | Get current user |
+
+---
+
+### 🧾 Records
+
+| Method | Endpoint                  | Description                             |
+| ------ | ------------------------- | --------------------------------------- |
+| POST   | /api/records              | Create record (Admin only)              |
+| GET    | /api/records              | Get records (with filters & pagination) |
+| GET    | /api/records/:id          | Get single record                       |
+| PATCH  | /api/records/:id          | Update record                           |
+| DELETE | /api/records/:id          | Soft delete record                      |
+| GET    | /api/records/meta/options | Get categories & types                  |
+
+---
+
+### 📊 Dashboard
+
+| Method | Endpoint                      | Description              |
+| ------ | ----------------------------- | ------------------------ |
+| GET    | /api/dashboard/summary        | Income, expense, balance |
+| GET    | /api/dashboard/categories     | Category breakdown       |
+| GET    | /api/dashboard/trends/monthly | Monthly trends           |
+| GET    | /api/dashboard/trends/weekly  | Weekly trends            |
+| GET    | /api/dashboard/activity       | Recent activity          |
+
+---
+
+### 👥 Users (Admin Only)
+
+| Method | Endpoint              | Description         |
+| ------ | --------------------- | ------------------- |
+| GET    | /api/users            | Get all users       |
+| GET    | /api/users/:id        | Get user            |
+| PATCH  | /api/users/:id/role   | Update role         |
+| PATCH  | /api/users/:id/status | Activate/deactivate |
+| DELETE | /api/users/:id        | Delete user         |
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1️⃣ Clone repository
+
+```id="k7dlp7"
+git clone <your-repo-link>
+cd finance-dashboard
+```
+
+---
+
+### 2️⃣ Install dependencies
+
+```id="p1r1pu"
+npm install
+```
+
+---
+
+### 3️⃣ Create `.env` file
+
+```id="j79x8m"
+PORT=5000
+MONGO_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=7d
+NODE_ENV=development
+```
+
+---
+
+### 4️⃣ Run server
+
+```id="08tzdy"
+npm run dev
+```
+
+---
+
+## 🧪 Testing Guide
+
+Use Postman or Thunder Client.
+
+### 🔑 Add token in headers:
+
+```id="31z8r7"
+Authorization: Bearer <token>
+```
+
+---
+
+## 🧠 Design Decisions
+
+* Used **service layer** for dashboard logic separation
+* Implemented **soft delete** to preserve data history
+* Enforced **RBAC at middleware level**
+* Used **MongoDB aggregation pipelines** for performance
+* Ensured **user-specific data isolation**
+
+---
+
+## ⚠️ Challenges & Fixes
+
+* Fixed middleware issues caused by Express v5 → downgraded to v4
+* Resolved `next is not a function` error caused by Mongoose pre-save hook
+* Simplified validation flow for consistency
+
+---
+
+## 🚀 Future Improvements
+
+* Swagger API documentation
+* Unit & integration testing
+* Rate limiting
+* Logging system
+* Redis caching for dashboard
+
+---
+
+## 👨‍💻 Author
+
+**Satyam Mishra**
+
+---
+
+## 📌 Note
+
+This project demonstrates:
+
+* Backend architecture design
+* Data modeling
+* Role-based access control
+* Aggregation logic
+* Error handling & validation
+
+---
